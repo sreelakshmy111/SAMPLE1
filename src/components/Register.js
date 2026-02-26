@@ -1,10 +1,14 @@
-t
+import React, { useState } from 'react'
+import './Register.css'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+
 
 const Register = () => {
 
   const token=localStorage.getItem("token")
 
-
+  const navigate =useNavigate();
  const [input,SetInput]= useState([])
  const [users,SetUsers]=useState([])
 
@@ -28,7 +32,7 @@ const handleInput =(e) =>{
      const uvalue=Array.isArray(response.data)? response.data:[response.data]
      SetUsers(uvalue)
      console.log("users save successfuly")
-     
+     navigate("/main")
   })
   .catch((err)=>{
     console.log("error in user creating",err?.response?.data)
@@ -42,7 +46,7 @@ const handleInput =(e) =>{
 
     <form className='register-form'>
 
-      <label className='label'>Username/mobile no</label>
+      <label className='label'>Username</label>
       <input type='text' name="username" className='input' onChange={handleInput}></input> 
 
       <label className='label'> E-mail</label>
