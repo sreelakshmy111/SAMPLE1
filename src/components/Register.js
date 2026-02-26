@@ -48,8 +48,7 @@ const handleInput =(e) =>{
 
       <label className='label'>Username</label>
       <input type='text' name="username" className='input' onChange={handleInput}></input> 
-      <label className='label'>Mobile number</label>
-      <input type='text' name="mobilenumber" className='input' onChange={handleInput}></input> 
+  
 
       <label className='label'> E-mail</label>
       <input type='text' name="email" className='input' onChange={handleInput}></input>
