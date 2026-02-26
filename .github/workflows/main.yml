@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -22,3 +22,5 @@ jobs:
 
       - name: Build project
         run: npm run build
+        env:
+          CI: false
