@@ -1,0 +1,57 @@
+.register-form {
+  /* border: 2px solid black !important; */
+  width: 460px;
+  height: 450px;
+  margin: 50px auto;
+  padding: 10px 10px;
+  border-radius: 10px;
+  background-color: #a79d9d17 !important;
+  box-shadow: #8eb8e6;
+}
+
+/* Label and input on same line */
+.label {
+  display: inline-block;
+  width: 70px;
+  margin-top: 40px !important;
+  margin: auto;
+  font-size: 18px;
+  text-align: left;
+  margin-left: 10px;
+  margin-right: 30px;
+}
+
+/* .input {
+  /* display: inline-block; */
+  /* width: 250px; */
+  /* margin-bottom: 15px; space between fields */
+/*  */
+
+.input  {
+  width: 250px;
+  padding: 6px 8px;
+  /* border: 1px solid #ccc; */
+  border-radius: 4px;
+  margin-top: 15px;
+  font-size: 15px;
+}
+
+/* Button */
+#register {
+  min-width: 300px;
+  padding: 8px;
+
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  margin-top: 70px;
+  cursor: pointer;
+   text-align: center ;
+   margin-left: 80px;
+}
+
+/* button:hover {
+  background-color: #0056b3;
+} */
