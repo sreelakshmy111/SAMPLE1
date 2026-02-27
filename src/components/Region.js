@@ -1,27 +1,25 @@
 import React, { useEffect, useState } from 'react'
-import Main from './Main'
 import { useNavigate } from 'react-router-dom'
-import './Register.css'
-
 import axios from 'axios'
+import Main from './Main'
+import './Register.css'
 
 const Region = () => {
   const navigate = useNavigate()
 
-  // ✅ ENV BASE URL
+  // ✅ Backend base URL (from .env)
   const BASE_URL = process.env.REACT_APP_BASE_URL
 
-  // ================= STATE =================
-  const [regioninput, setRegioninput] = useState({
+  // ================= STATES =================
+  const [regionInput, setRegionInput] = useState({
     name: '',
     description: ''
   })
 
-  const [eid, setEid] = useState(null)
-  const [ename, setEname] = useState('')
-  const [buids, setBuids] = useState(null)
-  const [bussinessunit, setBussinessunit] = useState([])
-  const [isactive, setIsactive] = useState([])
+  const [enterpriseId, setEnterpriseId] = useState(null)
+  const [enterpriseName, setEnterpriseName] = useState('')
+  const [businessUnits, setBusinessUnits] = useState([])
+  const [selectedBuId, setSelectedBuId] = useState('')
 
   const [errors, setErrors] = useState({
     name: false,
@@ -30,52 +28,34 @@ const Region = () => {
 
   const token = localStorage.getItem('token')
 
-  // ================= GET ISACTIVE =================
+  // ================= GET ENTERPRISE + BUSINESS UNITS =================
   useEffect(() => {
-    axios
-      .get(`http://localhost:3000/master/code?name=isactive/values`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      .then((response) => {
-        const values = Array.isArray(response.data)
-          ? response.data
-          : response.data?.codeValues || []
-        setIsactive(values)
-      })
-      .catch((err) => {
-        console.log('isactive error', err?.response?.data)
-      })
-  }, [])
+    const enterpriseData = JSON.parse(
+      localStorage.getItem('enterprisedata')
+    )
 
-  // ================= GET BUSINESS UNITS =================
-  useEffect(() => {
-    const edata = JSON.parse(localStorage.getItem('enterprisedata'))
+    if (enterpriseData && enterpriseData.length > 0) {
+      const eid = enterpriseData[0].eid
+      const ename = enterpriseData[0].name
 
-    if (edata && edata.length > 0) {
-      const enterpriseId = edata[0].eid
-      const enterpriseName = edata[0].name
-
-      setEid(enterpriseId)
-      setEname(enterpriseName)
+      setEnterpriseId(eid)
+      setEnterpriseName(ename)
 
       axios
-        .get(`${BASE_URL}/enterprises/${enterpriseId}/bussinessunits`, {
+        .get(`${BASE_URL}/enterprises/${eid}/bussinessunits`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         })
-        .then((response) => {
-          const bu = Array.isArray(response.data)
-            ? response.data
-            : [response.data]
-          setBussinessunit(bu)
-          localStorage.setItem('bussinessunit', JSON.stringify(bu))
+        .then((res) => {
+          const buList = Array.isArray(res.data)
+            ? res.data
+            : [res.data]
+          setBusinessUnits(buList)
         })
         .catch((err) => {
-          console.log('business unit error', err?.response?.data)
-          alert('Error in business unit fetching')
+          console.log('Business unit fetch error', err?.response?.data)
+          alert('Error fetching business units')
         })
     }
   }, [BASE_URL, token])
@@ -84,21 +64,21 @@ const Region = () => {
   const handleInput = (e) => {
     const { name, value } = e.target
 
-    setRegioninput((prev) => ({
-      ...prev,
-      [name]: value
-    }))
-
     if (name === 'bussinessUnitId') {
-      setBuids(value)
+      setSelectedBuId(value)
+    } else {
+      setRegionInput((prev) => ({
+        ...prev,
+        [name]: value
+      }))
     }
   }
 
   // ================= VALIDATION =================
   const validate = () => {
     const newErrors = {
-      name: !regioninput.name.trim(),
-      description: !regioninput.description.trim()
+      name: !regionInput.name.trim(),
+      description: !regionInput.description.trim()
     }
 
     setErrors(newErrors)
@@ -110,15 +90,16 @@ const Region = () => {
     e.preventDefault()
 
     if (!validate()) return
-    if (!buids) {
-      alert('Please select Business Unit')
+
+    if (!selectedBuId) {
+      alert('Please select a Business Unit')
       return
     }
 
     try {
       await axios.post(
-        `${BASE_URL}/enterprises/${eid}/bussinessunits/${buids}/regions`,
-        regioninput,
+        `${BASE_URL}/enterprises/${enterpriseId}/bussinessunits/${selectedBuId}/regions`,
+        regionInput,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -126,20 +107,21 @@ const Region = () => {
         }
       )
 
-      alert('Region created successfully')
+      alert('Region created successfully ✅')
 
       // reset form
-      setRegioninput({
+      setRegionInput({
         name: '',
         description: ''
       })
+      setSelectedBuId('')
     } catch (err) {
-      console.log('region save error', err?.response?.data)
-      alert('Error in region creation')
+      console.log('Region save error', err?.response?.data)
+      alert('Error creating region')
     }
   }
 
-  // ================= JSX =================
+  // ================= UI =================
   return (
     <div>
       <Main />
@@ -148,18 +130,19 @@ const Region = () => {
 
       <form className="regionForm">
         <label className="enterprise-name">
-          Enterprise: {ename}
+          Enterprise: {enterpriseName}
         </label>
 
         <br /><br />
 
         <select
           name="bussinessUnitId"
+          value={selectedBuId}
           onChange={handleInput}
           className="value-name"
         >
           <option value="">---- Select Business Unit ----</option>
-          {bussinessunit.map((bu) => (
+          {businessUnits.map((bu) => (
             <option key={bu.buid} value={bu.buid}>
               {bu.name}
             </option>
@@ -172,11 +155,12 @@ const Region = () => {
           <p className="error-text">Region name is required</p>
         )}
         <input
+          type="text"
           name="name"
-          value={regioninput.name}
+          value={regionInput.name}
           onChange={handleInput}
           className={`value-name ${errors.name ? 'error-border' : ''}`}
-          placeholder="Enter region"
+          placeholder="Enter region name"
         />
 
         <br /><br />
@@ -185,11 +169,12 @@ const Region = () => {
           <p className="error-text">Description is required</p>
         )}
         <input
+          type="text"
           name="description"
-          value={regioninput.description}
+          value={regionInput.description}
           onChange={handleInput}
           className={`value-name ${errors.description ? 'error-border' : ''}`}
-          placeholder="Description"
+          placeholder="Enter description"
         />
 
         <br /><br />

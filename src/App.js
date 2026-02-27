@@ -1,13 +1,14 @@
-import logo from './logo.svg';
-import './App.css';
-import Register from './components/Register';
+import React from 'react'
+import { Routes, Route } from 'react-router-dom'
+import Region from './components/Region'
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <Register/>
-    </div>
-  );
+    <Routes>
+      <Route path="/" element={<Region />} />
+      <Route path="/region" element={<Region />} />
+    </Routes>
+  )
 }
 
-export default App;
+export default App

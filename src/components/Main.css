@@ -1,0 +1,29 @@
+.main-container {
+  width: 100%;
+}
+
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1e1e2f;
+  padding: 12px 20px;
+}
+
+.logo {
+  color: white;
+  margin: 0;
+}
+
+.nav-menu button {
+  margin-left: 10px;
+  padding: 6px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.logout-btn {
+  background-color: red;
+  color: white;
+}
