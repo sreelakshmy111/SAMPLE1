@@ -3,6 +3,7 @@ name: React CI
 on:
   push:
     branches: [ "ci" ]
+    
   pull_request:
     branches: [ "ci" ]
 
@@ -27,3 +28,4 @@ jobs:
 
       - name: Build project
         run: npm run build
+     
