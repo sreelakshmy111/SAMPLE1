@@ -162,6 +162,14 @@ const Region = () => {
           className={`value-name ${errors.name ? 'error-border' : ''}`}
           placeholder="Enter region name"
         />
+        <input
+          type="text"
+          name="name"
+          value={regionInput.name}
+          onChange={handleInput}
+          className={`value-name ${errors.name ? 'error-border' : ''}`}
+          placeholder="Enter region name"
+        />
 
         <br /><br />
 
